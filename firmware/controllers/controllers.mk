@@ -43,6 +43,7 @@ CONTROLLERS_SRC_CPP = \
 	$(CONTROLLERS_DIR)/flash_main.cpp \
 	$(CONTROLLERS_DIR)/bench_test.cpp \
 	$(CONTROLLERS_DIR)/can/obd2.cpp \
+	$(CONTROLLERS_DIR)/can/obd2_pids.cpp \
 	$(CONTROLLERS_DIR)/can/can_verbose.cpp \
 	$(CONTROLLERS_DIR)/can/can_rx.cpp \
 	$(CONTORLLERS_DIR)/can/rusefi_wideband.cpp \
