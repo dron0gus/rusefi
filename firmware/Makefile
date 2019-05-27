@@ -170,7 +170,7 @@ endif
 #Now include RusEFI mk files
 include console/binary/tunerstudio.mk
 ifeq ($(USE_FATFS),yes)
-include $(PROJECT_DIR)/ext/fatfs.mk
+include $(PROJECT_DIR)/ext/fatfs/fatfs.mk
 endif
 
 include $(PROJECT_DIR)/config/engines/engines.mk
@@ -278,7 +278,7 @@ INCDIR = $(ALLINC) \
 	$(CONFDIR) \
 	config/engines \
 	config \
-	ext \
+	$(FATFSINC) \
 	ext_algo \
 	console_util \
 	$(CONSOLE_INC) \
