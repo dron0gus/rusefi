@@ -21,31 +21,27 @@
 static ioportmask_t ext_used = 0;
 
 // EXT is not able to give you the front direction but you could read the pin in the callback.
-void efiExtiEnablePin(const char *msg, brain_pin_e brainPin, uint32_t mode, palcallback_t cb, void *cb_data) {
+int efiExtiEnablePin(const char *msg, brain_pin_e brainPin, uint32_t mode, palcallback_t cb, void *cb_data) {
 
 	/* paranoid check, in case of GPIO_UNASSIGNED getHwPort will return NULL
 	 * and we will fail on next check */
 	if (!isBrainPinValid(brainPin)) {
-		return;
-	}
-
-	ioportid_t port = getHwPort(msg, brainPin);
-	if (port == NULL) {
-		return;
+		return -1;
 	}
 
 	bool wasUsed = brain_pin_markUsed(brainPin, msg);
 	if (wasUsed) {
 		// error condition we shall bail
-		return;
+		return -1;
 	}
 
+	ioportid_t port = getHwPort(msg, brainPin);
 	int index = getHwPin(msg, brainPin);
 
 	/* is this index already used? */
 	if (ext_used & PAL_PORT_BIT(index)) {
 		firmwareError(CUSTOM_ERR_PIN_ALREADY_USED_2, "%s: pin %d: exti index already used", msg, brainPin);
-		return;
+		return -1;
 	}
 
 	ioline_t line = PAL_LINE(port, index);
@@ -54,6 +50,9 @@ void efiExtiEnablePin(const char *msg, brain_pin_e brainPin, uint32_t mode, palc
 
 	/* mark used */
 	ext_used |= PAL_PORT_BIT(index);
+	brain_pin_markUsed(brainPin, msg);
+
+	return 0;
 }
 
 void efiExtiDisablePin(brain_pin_e brainPin)
@@ -80,6 +79,7 @@ void efiExtiDisablePin(brain_pin_e brainPin)
 
 	/* mark unused */
 	ext_used &= ~PAL_PORT_BIT(index);
+	brain_pin_markUnused(brainPin);
 }
 
 digital_input_s* startDigitalCaptureExti(const char *msg, brain_pin_e brainPin) {
