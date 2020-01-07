@@ -79,9 +79,7 @@ int extiTriggerTurnOnInputPin(const char *msg, int index, bool isTriggerShaft) {
 	} else {
 		camLines[index] = pal_line;
 	}
-	efiExtiEnablePin(msg, brainPin, PAL_EVENT_MODE_BOTH_EDGES, isTriggerShaft ? shaft_callback : cam_callback, (void *)index);
-
-	return 0;
+	return efiExtiEnablePin(msg, brainPin, PAL_EVENT_MODE_BOTH_EDGES, isTriggerShaft ? shaft_callback : cam_callback, (void *)index);
 }
 
 void extiTriggerTurnOffInputPin(brain_pin_e brainPin) {
