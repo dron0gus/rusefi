@@ -9,6 +9,12 @@ rm -f gen_config_board.log
 # todo: who is the consumer of this folder? shall we move that 'mkdir' command closer to usage?
 mkdir build
 
+echo "This would automatically copy latest file to 'dev' TS projects to ${TS_PATH}"
+[ -d $TS_PATH/dev/projectCfg/ ] || mkdir -p $TS_PATH/dev/projectCfg/
+cp -v tunerstudio/generated/rusefi.ini $TS_PATH/dev/projectCfg/mainController.ini
+[ -d $TS_PATH/mre_f4/projectCfg/ ] || mkdir -p $TS_PATH/mre_f4/projectCfg/
+cp -v tunerstudio/generated/rusefi_mre_f4.ini $TS_PATH/mre_f4/projectCfg/mainController.ini
+
 #
 # see also build-firmware where we compile all versions of firmware
 #
