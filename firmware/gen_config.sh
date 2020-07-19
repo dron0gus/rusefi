@@ -25,12 +25,16 @@ cp -v tunerstudio/generated/rusefi_mre_f4.ini $TS_PATH/mre_f4/projectCfg/mainCon
 for BOARD in "f429-discovery f429-discovery" "hellen/hellen128 hellen128" "hellen/hellen121vag hellen121vag" "hellen/hellen121nissan hellen121nissan" "hellen/hellen72 hellen72" "hellen/hellen64_miataNA6_94 hellenNA6" "microrusefi mre_f7" "microrusefi mre_f4" "frankenso frankenso_na6" "prometheus prometheus_469" "prometheus prometheus_405" "proteus proteus_f7" "proteus proteus_f4"; do
  BOARD_NAME="${BOARD% *}"
  BOARD_SHORT_NAME="${BOARD#* }"
- bash gen_config_board.sh $BOARD_NAME $BOARD_SHORT_NAME
+ echo "Generating for ${BOARD_NAME} (${BOARD_SHORT_NAME})"
+ bash gen_config_board.sh $BOARD_NAME $BOARD_SHORT_NAME >> /dev/null
  [ $? -eq 0 ] || { echo "ERROR generating board $BOARD_NAME $BOARD_SHORT_NAME"; exit 1; }
 done
 
+[ -d $TS_PATH/subaru_eg33_f7/projectCfg/ ] || mkdir -p $TS_PATH/subaru_eg33_f7/projectCfg/
+cp -v tunerstudio/generated/rusefi_subaru_eg33_f7.ini $TS_PATH/subaru_eg33_f7/projectCfg/mainController.ini
+
 cd config/boards/kinetis/config
-bash gen_config.sh
+bash gen_config.sh >> /dev/null
 [ $? -eq 0 ] || { echo "ERROR generating board kinetis kin"; exit 1; }
 
 
