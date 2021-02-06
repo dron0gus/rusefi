@@ -796,7 +796,7 @@ void setDefaultFrankensoConfiguration(DECLARE_CONFIG_PARAMETER_SIGNATURE) {
 
 // by default, do not ignore config from flash! use it!
 #ifndef IGNORE_FLASH_CONFIGURATION
-#define IGNORE_FLASH_CONFIGURATION false
+#define IGNORE_FLASH_CONFIGURATION true
 #endif
 
 void loadConfiguration(DECLARE_ENGINE_PARAMETER_SIGNATURE) {
