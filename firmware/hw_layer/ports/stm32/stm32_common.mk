@@ -1,4 +1,6 @@
 HW_LAYER_EMS += $(PROJECT_DIR)/hw_layer/ports/stm32/usb/cdc_usbcfg.c \
+				$(PROJECT_DIR)/hw_layer/ports/stm32/usb/msd_usbcfg.c \
+				$(CHIBIOS_CONTRIB)/os/various/lib_scsi.c \
 	            $(PROJECT_DIR)/hw_layer/ports/stm32/usb/usbconsole.c \
 				$(PROJECT_DIR)/hw_layer/ports/stm32/flash_int.c \
 
@@ -10,4 +12,6 @@ HW_LAYER_EMS_CPP += \
 
 RUSEFIASM = $(PROJECT_DIR)/hw_layer/ports/stm32/rusEfiStartup.S
 
-HW_INC += $(PROJECT_DIR)/hw_layer/ports/stm32 $(PROJECT_DIR)/hw_layer/ports/stm32/usb
+HW_INC += $(PROJECT_DIR)/hw_layer/ports/stm32 \
+		  $(PROJECT_DIR)/hw_layer/ports/stm32/usb \
+		  $(CHIBIOS_CONTRIB)/os/various \

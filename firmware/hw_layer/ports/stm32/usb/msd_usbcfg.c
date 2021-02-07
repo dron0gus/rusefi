@@ -19,7 +19,7 @@
 #if HAL_USE_USB_MSD
 
 #include "hal_usb_msd.h"
-#include "usb_msd_cfg.h"
+#include "msd_usbcfg.h"
 
 /*
  * must be 64 for full speed and 512 for high speed
@@ -36,7 +36,7 @@ static const uint8_t msd_device_descriptor_data[18] = {
                          0x00,          /* bDeviceProtocol.                 */
                          0x40,          /* bMaxPacketSize.                  */
                          0x0483,        /* idVendor (ST).                   */
-                         0x5742,        /* idProduct.                       */
+                         0x5740,        /* idProduct.                       */
                          0x0200,        /* bcdDevice.                       */
                          1,             /* iManufacturer.                   */
                          2,             /* iProduct.                        */
@@ -48,7 +48,7 @@ static const uint8_t msd_device_descriptor_data[18] = {
  * Device Descriptor wrapper.
  */
 static const USBDescriptor msd_device_descriptor = {
-  sizeof msd_device_descriptor_data,
+  sizeof(msd_device_descriptor_data),
   msd_device_descriptor_data
 };
 
@@ -135,10 +135,10 @@ static const uint8_t msd_string3[] = {
  * Strings wrappers array.
  */
 static const USBDescriptor msd_strings[] = {
-  {sizeof msd_string0, msd_string0},
-  {sizeof msd_string1, msd_string1},
-  {sizeof msd_string2, msd_string2},
-  {sizeof msd_string3, msd_string3}
+  {sizeof(msd_string0), msd_string0},
+  {sizeof(msd_string1), msd_string1},
+  {sizeof(msd_string2), msd_string2},
+  {sizeof(msd_string3), msd_string3}
 };
 
 /*
@@ -223,7 +223,7 @@ static void usb_event(USBDriver *usbp, usbevent_t event) {
 /*
  * USB driver configuration.
  */
-const USBConfig msdusbcfg = {
+const USBConfig msd_usbcfg = {
   usb_event,
   get_descriptor,
   msd_request_hook,
