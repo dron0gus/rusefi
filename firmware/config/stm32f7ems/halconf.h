@@ -403,6 +403,8 @@
 #define USB_USE_WAIT                TRUE
 #endif
 
+#include "halconf_community.h"
+
 #endif /* HALCONF_H */
 
 /** @} */
