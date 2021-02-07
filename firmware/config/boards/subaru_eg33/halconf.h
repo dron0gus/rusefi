@@ -8,10 +8,14 @@
  */
 
 #include "mcuconf.h"
+
+/* This is not good for smart build */
 #include "../../stm32f7ems/halconf.h"
 
 #ifndef _HALCONF_SUBARUEG33_H_
 #define _HALCONF_SUBARUEG33_H_
+
+/* Settings overrides for halconf.h */
 
 #undef HAL_USE_PAL
 #define HAL_USE_PAL				TRUE
@@ -35,7 +39,8 @@
 //#define HAL_USE_UART			FALSE
 //#endif
 
-#undef HAL_USE_USB_MSD
-#define HAL_USE_USB_MSD			FALSE
+/* settings overrides for halcof_community.h */
+
+/* no yet */
 
 #endif /* _HALCONF_SUBARUEG33_H_ */
