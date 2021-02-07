@@ -47,7 +47,6 @@
 EXTERN_ENGINE;
 
 #if HAL_USE_SERIAL_USB
-#include "usbcfg.h"
 #include "usbconsole.h"
 #define EFI_CONSOLE_USB_DEVICE SDU1
 #define SERIAL_USB_DRIVER SerialUSBDriver

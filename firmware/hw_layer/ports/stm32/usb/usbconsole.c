@@ -12,7 +12,7 @@
 #if EFI_USB_SERIAL
 
 #include "usbconsole.h"
-#include "usbcfg.h"
+#include "cdc_usbcfg.h"
 #include "mpu_util.h"
 
 static bool isUsbSerialInitialized = false;
