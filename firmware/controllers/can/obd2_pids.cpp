@@ -122,7 +122,7 @@ static int obd_get_fuel_system_status(struct obd_pid_handler_desc* desc, uint8_t
 
 static int obd_get_engine_load(struct obd_pid_handler_desc* desc, uint8_t *data)
 {
-	odb_clamp_and_store_u8(data, getEngineLoadT(PASS_ENGINE_PARAMETER_SIGNATURE) * 2.55f);
+	//odb_clamp_and_store_u8(data, getEngineLoadT(PASS_ENGINE_PARAMETER_SIGNATURE) * 2.55f);
 
 	return desc->reply_size;
 }
@@ -176,7 +176,7 @@ static int obd_get_iat(struct obd_pid_handler_desc* desc, uint8_t *data)
 static int obd_get_maf(struct obd_pid_handler_desc* desc, uint8_t *data)
 {
 	/* convert from kg/h to g/sec */
-	odb_clamp_and_store_u16(data, getRealMaf(PASS_ENGINE_PARAMETER_SIGNATURE) * 1000.0 / 60.0 / 60.0 * 100.0f);
+	//odb_clamp_and_store_u16(data, getRealMaf(PASS_ENGINE_PARAMETER_SIGNATURE) * 1000.0 / 60.0 / 60.0 * 100.0f);
 
 	return desc->reply_size;
 }
