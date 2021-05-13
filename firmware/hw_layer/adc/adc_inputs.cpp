@@ -243,13 +243,23 @@ int AdcDevice::size() const {
 	return channelCount;
 }
 
-int AdcDevice::getAdcValueByHwChannel(adc_channel_e hwChannel) const {
-	int internalIndex = internalAdcIndexByHardwareIndex[hwChannel];
+int AdcDevice::getAdcValueByIndex(int internalIndex) const {
+	if (internalIndex >= size()) {
+		firmwareError(OBD_PCM_Processor_Fault, "ADC channel index %d out of range %d",
+			internalIndex, size());
+		return 0;
+	}
 	return values.adc_data[internalIndex];
 }
 
-int AdcDevice::getAdcValueByIndex(int internalIndex) const {
-	return values.adc_data[internalIndex];
+int AdcDevice::getAdcValueByHwChannel(adc_channel_e hwChannel) const {
+	if (hwChannel >= ARRAY_SIZE(internalAdcIndexByHardwareIndex)) {
+		firmwareError(OBD_PCM_Processor_Fault, "ADC hwChannel %d out of range %d",
+			hwChannel, ARRAY_SIZE(internalAdcIndexByHardwareIndex));
+		return 0;
+	}
+	int internalIndex = internalAdcIndexByHardwareIndex[hwChannel];
+	return getAdcValueByIndex(internalIndex);
 }
 
 void AdcDevice::init(void) {
