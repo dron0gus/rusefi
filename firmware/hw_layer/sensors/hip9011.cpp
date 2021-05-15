@@ -80,6 +80,18 @@ private:
 	uint8_t rep_value;
 };
 
+/*
+yes, that table (ignitionPositionWithinEngineCycle[i]) contains the offset from #1 for each cylinder
+8:02
+look at fuel_schedule.cpp line 115 ish
+8:03
+you probably want to use a event_trigger_position_s like injection and ignition
+8:03
+it handles the trigger offset part
+8:04
+and determining which tooth to fire on
+*/
+
 /* TODO: include following stuff in object */
 /* wake semaphore */
 static semaphore_t wake;
