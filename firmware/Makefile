@@ -165,6 +165,7 @@ ifneq ($(USE_LIS302),no)
 include $(CHIBIOS)/os/ex/devices/ST/lis302dl.mk
 endif
 include $(CHIBIOS)/os/hal/lib/streams/streams.mk
+include $(CHIBIOS)/os/various/shell/shell.mk
 include $(CHIBIOS)/os/various/cpp_wrappers/chcpp.mk
 
 ifeq ($(USE_FATFS),yes)
@@ -359,7 +360,7 @@ CPPWARN = -Wall -Wextra
 #
 
 # List all user C define here, like -D_DEBUG=1
-UDEFS =
+UDEFS = -DSHELL_CMD_TEST_ENABLED=0
 
 # Define ASM defines here
 UADEFS =

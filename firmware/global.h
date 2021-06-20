@@ -90,3 +90,18 @@ typedef unsigned int time_t;
 #endif
 
 #define UNIT_TEST_BUSY_WAIT_CALLBACK() {}
+
+#ifdef EFI_SERIAL_SHELL_SD
+extern systime_t last_print_tm;
+#define dbgprintf(fmt, ...)															\
+	do {																			\
+		time_usecs_t tm_diff = chTimeI2US(chVTTimeElapsedSinceX(last_print_tm));	\
+		chprintf((BaseSequentialStream *)&(EFI_SERIAL_SHELL_SD),					\
+			"[%06d.%06d] ", tm_diff / 1000000, tm_diff % 1000000);					\
+		chprintf((BaseSequentialStream *)&(EFI_SERIAL_SHELL_SD),					\
+			fmt, ##__VA_ARGS__);													\
+		last_print_tm = chVTGetSystemTime();										\
+	} while (0)
+#else
+#define dbgprintf(fmt, ...)
+#endif
