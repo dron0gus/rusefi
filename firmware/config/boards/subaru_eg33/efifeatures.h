@@ -20,10 +20,8 @@
 #undef LED_RUNING_BRAIN_PIN_MODE
 #define LED_RUNING_BRAIN_PIN_MODE		INVERTED_OUTPUT
 
-/* debug console */
-#undef TS_PRIMARY_SERIAL
-#undef TS_PRIMARY_UART
-#define TS_PRIMARY_SERIAL		SD1
+/* debug/shell console */
+#define EFI_SERIAL_SHELL_SD			(SD1)
 
 // no secondary channel
 #undef TS_SECONDARY_UART
