@@ -38,7 +38,7 @@ class TsChannelBase {
 public:
 	// Virtual functions - implement these for your underlying transport
 	virtual void write(const uint8_t* buffer, size_t size) = 0;
-	virtual size_t readTimeout(uint8_t* buffer, size_t size, int timeout) = 0;
+	virtual size_t readTimeout(uint8_t* buffer, size_t size, sysinterval_t timeout) = 0;
 
 	// These functions are optional to implement, not all channels need them
 	virtual void flush() { }
@@ -82,7 +82,7 @@ public:
 	void stop() override;
 
 	void write(const uint8_t* buffer, size_t size) override;
-	size_t readTimeout(uint8_t* buffer, size_t size, int timeout) override;
+	size_t readTimeout(uint8_t* buffer, size_t size, sysinterval_t timeout) override;
 
 private:
 	SerialDriver* const m_driver;
@@ -99,7 +99,7 @@ public:
 	void stop() override;
 
 	void write(const uint8_t* buffer, size_t size) override;
-	size_t readTimeout(uint8_t* buffer, size_t size, int timeout) override;
+	size_t readTimeout(uint8_t* buffer, size_t size, sysinterval_t timeout) override;
 
 protected:
 	UARTDriver* const m_driver;
