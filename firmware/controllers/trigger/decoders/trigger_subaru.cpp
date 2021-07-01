@@ -320,3 +320,48 @@ void initializeSubaru_SVX(TriggerWaveform *s) {
 
 	s->tdcPosition = -60;
 }
+
+
+/* SVX Crank #1 - 12 events per rotation - every 30 degrees */
+void initializeSubaru_SVX_Crank(TriggerWaveform *s) {
+	/**
+	 * Note how we use 0..180 range while defining FOUR_STROKE_SYMMETRICAL_CRANK_SENSOR trigger
+	 * Note that only half of the physical wheel is defined here!
+	 */
+	s->initialize(FOUR_STROKE_SYMMETRICAL_CRANK_SENSOR);
+
+	/* we should use only falling edges */
+	s->useRiseEdge = false;
+
+	float width = 15.0;
+	float offset = 10; /* to make last event @ 180 */
+
+	/* closest to BTDC fall event happens -10 degrees before */
+	s->tdcPosition = offset;
+
+	#define SUBARU_SVX_CRANK1_PULSE(n) \
+		s->addEventAngle(20 + (30 * (n)) + offset - width, T_PRIMARY, TV_RISE);	\
+		s->addEventAngle(20 + (30 * (n)) + offset, T_PRIMARY, TV_FALL)
+
+	/* define 6 events */
+	SUBARU_SVX_CRANK1_PULSE(0);
+	SUBARU_SVX_CRANK1_PULSE(1);
+	SUBARU_SVX_CRANK1_PULSE(2);
+	SUBARU_SVX_CRANK1_PULSE(3);
+	SUBARU_SVX_CRANK1_PULSE(4);
+	/* 20 + (30 * 5) + 10 = 180 */
+	SUBARU_SVX_CRANK1_PULSE(5);
+}
+
+void initializeSubaru_SVX_Cam(TriggerWaveform *s) {
+	s->initialize(FOUR_STROKE_CAM_SENSOR);
+
+	s->addEvent720(325, T_PRIMARY, TV_FALL);
+	s->addEvent720(360, T_PRIMARY, TV_RISE);
+
+	s->addEvent720(641, T_PRIMARY, TV_FALL);
+	s->addEvent720(677, T_PRIMARY, TV_RISE);
+
+	s->addEvent720(700, T_PRIMARY, TV_FALL);
+	s->addEvent720(720, T_PRIMARY, TV_RISE);
+}
