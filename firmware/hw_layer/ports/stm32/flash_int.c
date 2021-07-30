@@ -31,6 +31,7 @@
 	// QW bit supercedes the older BSY bit
 	#define intFlashWaitWhileBusy() do { __DSB(); } while (FLASH_SR & FLASH_SR_QW);
 #else
+	#define FLASH_ACR FLASH->ACR
 	#define FLASH_CR FLASH->CR
 	#define FLASH_SR FLASH->SR
 	#define FLASH_KEYR FLASH->KEYR
@@ -65,6 +66,9 @@ flashsector_t intFlashSectorAt(flashaddr_t address) {
  * @return HAL_FAILED    Unlock failed.
  */
 static bool intFlashUnlock(void) {
+	/* Disable ART accelerator */
+	FLASH_ACR &= ~FLASH_ACR_ARTEN;
+
 	/* Check if unlock is really needed */
 	if (!(FLASH_CR & FLASH_CR_LOCK))
 		return HAL_SUCCESS;
@@ -85,6 +89,9 @@ static bool intFlashUnlock(void) {
 static void intFlashLock(void)
 {
 	FLASH_CR |= FLASH_CR_LOCK;
+
+	/* Enable ART accelerator */
+	FLASH_ACR |= FLASH_ACR_ARTEN;
 }
 
 #ifdef STM32F7XX
