@@ -232,6 +232,7 @@ static void doPeriodicSlowCallback(DECLARE_ENGINE_PARAMETER_SIGNATURE) {
 		engine->rpmCalculator.setStopSpinning(PASS_ENGINE_PARAMETER_SIGNATURE);
 	}
 
+#ifndef EFI_FLASH_WRITE_THREAD
 	if (ENGINE(directSelfStimulation) || engine->rpmCalculator.isStopped()) {
 		/**
 		 * rusEfi usually runs on hardware which halts execution while writing to internal flash, so we
@@ -243,6 +244,7 @@ static void doPeriodicSlowCallback(DECLARE_ENGINE_PARAMETER_SIGNATURE) {
 		writeToFlashIfPending();
 #endif /* EFI_INTERNAL_FLASH */
 	}
+#endif
 
 	if (engine->rpmCalculator.isStopped()) {
 		resetAccel();
