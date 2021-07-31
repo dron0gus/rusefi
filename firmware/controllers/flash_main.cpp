@@ -96,7 +96,13 @@ int eraseAndFlashCopy(flashaddr_t storageAddress, const TStorage& data) {
 		return err;
 	}
 
-	return intFlashWrite(storageAddress, reinterpret_cast<const char*>(&data), sizeof(TStorage));
+	err = intFlashWrite(storageAddress, reinterpret_cast<const char*>(&data), sizeof(TStorage));
+	if (FLASH_RETURN_SUCCESS != err) {
+		firmwareError(OBD_PCM_Processor_Fault, "Failed to write flash at 0x%08x: %d", storageAddress, err);
+		return err;
+	}
+
+	return err;
 }
 
 void writeToFlashNow(void) {
