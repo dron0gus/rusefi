@@ -88,6 +88,10 @@ void mpu_debug(BaseSequentialStream *chp)
 }
 
 int main(void) {
+	/* Disable ITCM */
+	SCB->ITCMCR = 0;
+	__DSB();
+
 	/*
 	 * ChibiOS/RT initialization
 	 */
