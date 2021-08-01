@@ -418,12 +418,12 @@ void applyNewHardwareSettings(DECLARE_ENGINE_PARAMETER_SIGNATURE) {
 #if EFI_PROD_CODE
 void setBor(int borValue) {
 	efiPrintf("setting BOR to %d", borValue);
-	BOR_Set((BOR_Level_t)borValue);
+//	BOR_Set((BOR_Level_t)borValue);
 	showBor();
 }
 
 void showBor(void) {
-	efiPrintf("BOR=%d", (int)BOR_Get());
+//	efiPrintf("BOR=%d", (int)BOR_Get());
 }
 #endif /* EFI_PROD_CODE */
 

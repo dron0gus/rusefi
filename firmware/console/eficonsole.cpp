@@ -49,8 +49,8 @@ static void sayHello(void) {
 #endif /* ENABLE_AUTO_DETECT_HSE */
 
 #if defined(STM32F4) || defined(STM32F7)
-	uint32_t *uid = ((uint32_t *)UID_BASE);
-	efiPrintf("UID=%x %x %x", uid[0], uid[1], uid[2]);
+//	uint32_t *uid = ((uint32_t *)UID_BASE);
+//  efiPrintf("UID=%x %x %x", uid[0], uid[1], uid[2]);
 
 #define 	TM_ID_GetFlashSize()    (*(__IO uint16_t *) (FLASHSIZE_BASE))
 #define MCU_REVISION_MASK  0xfff
@@ -58,13 +58,14 @@ static void sayHello(void) {
 	int mcuRevision = DBGMCU->IDCODE & MCU_REVISION_MASK;
 
 #define MIN_FLASH_SIZE 1024
-
+#if 0
 	int flashSize = TM_ID_GetFlashSize();
 	if (flashSize < MIN_FLASH_SIZE) {
 		firmwareError(OBD_PCM_Processor_Fault, "rusEFI expected at least %dK of flash", MIN_FLASH_SIZE);
 	}
 
 	efiPrintf("rev=%x size=%d", mcuRevision, flashSize);
+#endif
 #endif
 
 

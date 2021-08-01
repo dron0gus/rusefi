@@ -9,12 +9,19 @@
 #include "flash_int.h"
 
 static bool isDualBank() {
+	/* OPTCR and OPTCR1 warning:
+	 * Access: no wait state when no Flash memory operation is ongoing...
+	 * Othervise (during flash operation) access to these registers can
+	 * cause CPU pause */
+	/* TODO: access once and use cached values? */
 	// cleared bit indicates dual bank
-	return (FLASH->OPTCR & FLASH_OPTCR_nDBANK) == 0;
+	//return (FLASH->OPTCR & FLASH_OPTCR_nDBANK) == 0;
+	return true;
 }
 
 static uint16_t flashSize() {
-	return *reinterpret_cast<const volatile uint16_t*>(FLASHSIZE_BASE);
+	return 2048;
+	//return *reinterpret_cast<const volatile uint16_t*>(FLASHSIZE_BASE);
 }
 
 enum class DeviceType {
@@ -50,8 +57,9 @@ static DeviceType determineDevice() {
 }
 
 bool allowFlashWhileRunning() {
+	return true;
 	// Allow flash-while-running if dual bank mode is enabled, and we're a 2MB device (ie, no code located in second bank)
-	return determineDevice() == DeviceType::DualBank2MB;
+	//return determineDevice() == DeviceType::DualBank2MB;
 }
 
 // See ST AN4826

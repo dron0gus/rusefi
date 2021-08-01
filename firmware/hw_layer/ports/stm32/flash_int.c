@@ -126,7 +126,8 @@ static void intFlashLock(void)
 #ifdef STM32F7XX
 static bool isDualBank(void) {
 	// cleared bit indicates dual bank
-	return (FLASH->OPTCR & FLASH_OPTCR_nDBANK) == 0;
+	//return (FLASH->OPTCR & FLASH_OPTCR_nDBANK) == 0;
+	return true;
 }
 #endif
 
@@ -189,9 +190,11 @@ int intFlashSectorErase(flashsector_t sector) {
 	if (ret != FLASH_RETURN_SUCCESS)
 		return ret;
 
+#if 0
 	/* Check deleted sector for errors */
 	if (intFlashIsErased(intFlashSectorBegin(sector), flashSectorSize(sector)) == FALSE)
 		return FLASH_RETURN_BAD_FLASH; /* Sector is not empty despite the erase cycle! */
+#endif
 
 	/* Successfully deleted sector */
 	return FLASH_RETURN_SUCCESS;
@@ -329,7 +332,7 @@ int intFlashWrite(flashaddr_t address, const char* buffer, size_t size) {
 #else // not STM32H7XX
 static int intFlashWriteData(flashaddr_t address, const flashdata_t data) {
 	/* Write the data */
-	*(flashdata_t*) address = data;
+	//*(flashdata_t*) address = data;
 
 	// Cortex-M7 (STM32F7/H7) can execute out order - need to force a full flush
 	// so that we actually wait for the operation to complete!

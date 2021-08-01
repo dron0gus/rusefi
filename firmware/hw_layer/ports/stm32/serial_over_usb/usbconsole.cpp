@@ -21,7 +21,7 @@ static bool isUsbSerialInitialized = false;
  * start USB serial using hard-coded communications pins (see comments inside the code)
  */
 void usb_serial_start(void) {
-	usbPopulateSerialNumber(MCU_SERIAL_NUMBER_LOCATION, MCU_SERIAL_NUMBER_BYTES);
+	usbPopulateSerialNumber((const uint8_t *)"0123456789012", MCU_SERIAL_NUMBER_BYTES);
 
 	efiSetPadMode("USB DM", EFI_USB_SERIAL_DM, PAL_MODE_ALTERNATE(EFI_USB_AF));
 	efiSetPadMode("USB DP", EFI_USB_SERIAL_DP, PAL_MODE_ALTERNATE(EFI_USB_AF));

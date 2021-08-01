@@ -349,6 +349,7 @@ bool isValidSerialRxPin(brain_pin_e pin) {
 
 #if EFI_PROD_CODE
 
+#if 0
 BOR_Level_t BOR_Get(void) {
 	FLASH_OBProgramInitTypeDef FLASH_Handle;
 
@@ -384,12 +385,13 @@ BOR_Result_t BOR_Set(BOR_Level_t BORValue) {
 
 	return BOR_Result_Ok;
 }
+#endif
 
 void baseMCUInit(void) {
 	// looks like this holds a random value on start? Let's set a nice clean zero
 	DWT->CYCCNT = 0;
 
-	BOR_Set(BOR_Level_1); // one step above default value
+//	BOR_Set(BOR_Level_1); // one step above default value
 }
 
 
