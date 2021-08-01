@@ -88,6 +88,11 @@ static bool intFlashUnlock(void) {
 	/* Disable ART accelerator */
 	FLASH_ACR &= ~FLASH_ACR_ARTEN;
 
+	/* The FLASH_CR register is not accessible in write mode when the BSY bit in the FLASH_SR
+	 * register is set. Any attempt to write to it with the BSY bit set will cause the AHB bus to stall
+	 * until the BSY bit is cleared. */
+	intFlashWaitWhileBusy();
+
 	/* Check if unlock is really needed */
 	if (!(FLASH_CR & FLASH_CR_LOCK))
 		return HAL_SUCCESS;
@@ -107,6 +112,11 @@ static bool intFlashUnlock(void) {
  */
 static void intFlashLock(void)
 {
+	/* The FLASH_CR register is not accessible in write mode when the BSY bit in the FLASH_SR
+	 * register is set. Any attempt to write to it with the BSY bit set will cause the AHB bus to stall
+	 * until the BSY bit is cleared. */
+	intFlashWaitWhileBusy();
+
 	FLASH_CR |= FLASH_CR_LOCK;
 
 	/* Enable ART accelerator */
