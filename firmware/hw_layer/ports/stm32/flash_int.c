@@ -15,6 +15,8 @@
 #include "flash_int.h"
 #include <string.h>
 
+#include "tracing.h"
+
 #ifdef STM32H7XX
 	// Use bank 2 on H7
 	#define FLASH_CR FLASH->CR2
@@ -152,8 +154,12 @@ int intFlashSectorErase(flashsector_t sector) {
 	if (intFlashUnlock() == HAL_FAILED)
 		return FLASH_RETURN_NO_PERMISSION;
 
+	TRACEPOINT();
+
 	/* Wait for any busy flags. */
 	intFlashWaitWhileBusy();
+
+	TRACEPOINT();
 
 	uint32_t cr = FLASH_CR;
 	/* Setup parallelism before any program/erase */
@@ -175,26 +181,40 @@ int intFlashSectorErase(flashsector_t sector) {
 	/* start erase operation */
 	cr |= FLASH_CR_STRT;
 
+	TRACEPOINT();
+
 	FLASH_CR = cr;
+
+	TRACEPOINT();
 
 	/* Wait until it's finished. */
 	intFlashWaitWhileBusy();
 
+	TRACEPOINT();
+
 	/* Sector erase flag does not clear automatically. */
 	FLASH_CR &= ~FLASH_CR_SER;
 
+	TRACEPOINT();
+
 	/* Lock flash again */
 	intFlashLock();
+
+	TRACEPOINT();
 
 	ret = intFlashCheckErrors();
 	if (ret != FLASH_RETURN_SUCCESS)
 		return ret;
 
 #if 0
+	TRACEPOINT();
+
 	/* Check deleted sector for errors */
 	if (intFlashIsErased(intFlashSectorBegin(sector), flashSectorSize(sector)) == FALSE)
 		return FLASH_RETURN_BAD_FLASH; /* Sector is not empty despite the erase cycle! */
 #endif
+
+	TRACEPOINT();
 
 	/* Successfully deleted sector */
 	return FLASH_RETURN_SUCCESS;
@@ -349,12 +369,18 @@ static int intFlashWriteData(flashaddr_t address, const flashdata_t data) {
 int intFlashWrite(flashaddr_t address, const char* buffer, size_t size) {
 	int ret = FLASH_RETURN_SUCCESS;
 
+	TRACEPOINT();
+
 	/* Unlock flash for write access */
 	if (intFlashUnlock() == HAL_FAILED)
 		return FLASH_RETURN_NO_PERMISSION;
 
+	TRACEPOINT();
+
 	/* Wait for any busy flags */
 	intFlashWaitWhileBusy();
+
+	TRACEPOINT();
 
 	/* Setup parallelism before any program/erase */
 	FLASH->CR &= ~FLASH_CR_PSIZE_MASK;
@@ -366,6 +392,8 @@ int intFlashWrite(flashaddr_t address, const char* buffer, size_t size) {
 
 	/* Enter flash programming mode */
 	FLASH->CR |= FLASH_CR_PG;
+
+	TRACEPOINT();
 
 	if (alignOffset != 0) {
 		/* Not aligned, thus we have to read the data in flash already present
@@ -396,6 +424,8 @@ int intFlashWrite(flashaddr_t address, const char* buffer, size_t size) {
 		size -= chunkSize;
 	}
 
+	TRACEPOINT();
+
 	/* Now, address is correctly aligned. One can copy data directly from
 	 * buffer's data to flash memory until the size of the data remaining to be
 	 * copied requires special treatment. */
@@ -408,6 +438,8 @@ int intFlashWrite(flashaddr_t address, const char* buffer, size_t size) {
 		buffer += sizeof(flashdata_t);
 		size -= sizeof(flashdata_t);
 	}
+
+	TRACEPOINT();
 
 	/* Now, address is correctly aligned, but the remaining data are to
 	 * small to fill a entier flashdata_t. Thus, one must read data already
@@ -422,12 +454,18 @@ int intFlashWrite(flashaddr_t address, const char* buffer, size_t size) {
 			goto exit;
 	}
 
+	TRACEPOINT();
+
 exit:
 	/* Exit flash programming mode */
 	FLASH->CR &= ~FLASH_CR_PG;
 
+	TRACEPOINT();
+
 	/* Lock flash again */
 	intFlashLock();
+
+	TRACEPOINT();
 
 	return ret;
 }

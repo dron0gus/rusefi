@@ -20,7 +20,13 @@ void initFlash();
  * running so we postpone the write until the engine is stopped.
  */
 void writeToFlashNow(void);
+#ifdef __cplusplus
+extern "C" {
+#endif
 void setNeedToWriteConfiguration(void);
+#ifdef __cplusplus
+}
+#endif
 /**
  * @return true if an flash write is pending
  */

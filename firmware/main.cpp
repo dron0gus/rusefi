@@ -27,7 +27,14 @@ static const SerialConfig shell_sd_config =
 #define SHELL_WA_SIZE	THD_WORKING_AREA_SIZE(2048)
 static THD_WORKING_AREA(shellStack, SHELL_WA_SIZE);
 
+extern "C" {
+	void rusefi_trace_cmd(BaseSequentialStream *chp, int argc, char *argv[]);
+	void rusefi_trace_trigger(BaseSequentialStream *chp, int argc, char *argv[]);
+}
+
 static const ShellCommand shell_commands[] = {
+	{"trace", rusefi_trace_cmd},
+	{"trigger", rusefi_trace_trigger},
 	{NULL, NULL}
 };
 

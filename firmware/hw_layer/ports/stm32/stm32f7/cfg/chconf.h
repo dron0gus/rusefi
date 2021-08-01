@@ -592,7 +592,7 @@
  * @note    The default is @p CH_DBG_TRACE_MASK_DISABLED.
  */
 #if !defined(CH_DBG_TRACE_MASK)
-#define CH_DBG_TRACE_MASK                   CH_DBG_TRACE_MASK_DISABLED
+#define CH_DBG_TRACE_MASK                   CH_DBG_TRACE_MASK_ALL
 #endif
 
 /**
@@ -724,6 +724,9 @@
   chDbgPanic3(reason, __FILE__, __LINE__); \
 }
 
+#ifndef __ASSEMBLER__
+extern void rusefi_trace_hook(void *t);
+#endif
 /**
  * @brief   Trace hook.
  * @details This hook is invoked each time a new record is written in the
@@ -731,6 +734,7 @@
  */
 #define CH_CFG_TRACE_HOOK(tep) {                                            \
   /* Trace code here.*/                                                     \
+  rusefi_trace_hook(tep);                                                   \
 }
 
 /** @} */

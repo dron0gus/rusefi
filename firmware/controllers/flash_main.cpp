@@ -22,6 +22,8 @@
 
 #include "runtime_state.h"
 
+#include "tracing.h"
+
 static bool needToWriteConfiguration = false;
 
 extern persistent_config_container_s persistentState;
@@ -90,6 +92,8 @@ int eraseAndFlashCopy(flashaddr_t storageAddress, const TStorage& data) {
 		return FLASH_RETURN_SUCCESS;
 	}
 
+	TRACESTART();
+
 	auto err = intFlashErase(storageAddress, sizeof(TStorage));
 	if (FLASH_RETURN_SUCCESS != err) {
 		firmwareError(OBD_PCM_Processor_Fault, "Failed to erase flash at 0x%08x: %d", storageAddress, err);
@@ -101,6 +105,8 @@ int eraseAndFlashCopy(flashaddr_t storageAddress, const TStorage& data) {
 		firmwareError(OBD_PCM_Processor_Fault, "Failed to write flash at 0x%08x: %d", storageAddress, err);
 		return err;
 	}
+
+	TRACESTOP();
 
 	return err;
 }
