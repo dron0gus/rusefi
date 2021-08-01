@@ -106,7 +106,13 @@ int eraseAndFlashCopy(flashaddr_t storageAddress, const TStorage& data) {
 }
 
 void writeToFlashNow(void) {
+	static volatile bool re_entry = false;
 	efiPrintf("Writing pending configuration...");
+
+	if (re_entry) {
+		firmwareError(OBD_PCM_Processor_Fault, "writeToFlashNow reentry!!!");
+	}
+	re_entry = true;
 
 	// Set up the container
 	persistentState.size = sizeof(persistentState);
@@ -131,6 +137,8 @@ void writeToFlashNow(void) {
 
 	// Write complete, clear the flag
 	needToWriteConfiguration = false;
+
+	re_entry = false;
 }
 
 static bool isValidCrc(persistent_config_container_s *state) {
