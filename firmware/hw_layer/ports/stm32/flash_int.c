@@ -328,9 +328,6 @@ int intFlashWrite(flashaddr_t address, const char* buffer, size_t size) {
 
 #else // not STM32H7XX
 static int intFlashWriteData(flashaddr_t address, const flashdata_t data) {
-	/* Enter flash programming mode */
-	FLASH->CR |= FLASH_CR_PG;
-
 	/* Write the data */
 	*(flashdata_t*) address = data;
 
@@ -343,8 +340,6 @@ static int intFlashWriteData(flashaddr_t address, const flashdata_t data) {
 	/* Wait for completion */
 	intFlashWaitWhileBusy();
 
-	/* Exit flash programming mode */
-	FLASH->CR &= ~FLASH_CR_PG;
 	return intFlashCheckErrors();
 }
 
@@ -365,6 +360,10 @@ int intFlashWrite(flashaddr_t address, const char* buffer, size_t size) {
 	/* Check if the flash address is correctly aligned */
 	size_t alignOffset = address % sizeof(flashdata_t);
 //	print("flash alignOffset=%d\r\n", alignOffset);
+
+	/* Enter flash programming mode */
+	FLASH->CR |= FLASH_CR_PG;
+
 	if (alignOffset != 0) {
 		/* Not aligned, thus we have to read the data in flash already present
 		 * and update them with buffer's data */
@@ -420,6 +419,9 @@ int intFlashWrite(flashaddr_t address, const char* buffer, size_t size) {
 	}
 
 exit:
+	/* Exit flash programming mode */
+	FLASH->CR &= ~FLASH_CR_PG;
+
 	/* Lock flash again */
 	intFlashLock();
 
