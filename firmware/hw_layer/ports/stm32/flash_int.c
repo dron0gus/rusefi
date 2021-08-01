@@ -195,6 +195,9 @@ int intFlashSectorErase(flashsector_t sector) {
 	/* Sector erase flag does not clear automatically. */
 	FLASH_CR &= ~FLASH_CR_SER;
 
+	/* flush */
+	__DSB();
+
 	TRACEPOINT();
 
 	/* Lock flash again */
