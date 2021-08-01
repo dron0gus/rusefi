@@ -374,8 +374,8 @@ int intFlashWrite(flashaddr_t address, const char* buffer, size_t size) {
 		/* Align the flash address correctly */
 		flashaddr_t alignedFlashAddress = address - alignOffset;
 
-		/* Read already present data */
-		flashdata_t tmp = *(volatile flashdata_t*) alignedFlashAddress;
+		/* No need to read already presented data - just write 0xff to it - this will not change flash content */
+		flashdata_t tmp = (flashdata_t) -1;
 
 		/* Compute how much bytes one must update in the data read */
 		size_t chunkSize = sizeof(flashdata_t) - alignOffset;
@@ -414,7 +414,8 @@ int intFlashWrite(flashaddr_t address, const char* buffer, size_t size) {
 	 * in flash and update them with buffer's data before writing an entire
 	 * flashdata_t to flash memory. */
 	if (size > 0) {
-		flashdata_t tmp = *(volatile flashdata_t*) address;
+		/* No need to read already presented data - just write 0xff to it - this will not change flash content */
+		flashdata_t tmp = (flashdata_t) -1;
 		memcpy(&tmp, buffer, size);
 		ret = intFlashWriteData(address, tmp);
 		if (ret != FLASH_RETURN_SUCCESS)
