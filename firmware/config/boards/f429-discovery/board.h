@@ -39,7 +39,7 @@
 /*
  * USB settings
  */
-#define EFI_USB_AF                  12U
+#define EFI_USB_AF                  10U
 //#define EFI_USB_SERIAL_ID         Gpio::A10
 #define EFI_USB_SERIAL_DM           Gpio::A11
 #define EFI_USB_SERIAL_DP           Gpio::A12
@@ -82,9 +82,9 @@
 #define GPIOA_ACP_RST               7U
 #define GPIOA_I2C3_SCL              8U
 #define GPIOA_UART_TX               9U
-#define GPIOA_UART_RX               10U
-#define GPIOA_LCD_R4                11U
-#define GPIOA_LCD_R5                12U
+#define GPIOA_OTG_FS_ID             10U
+#define GPIOA_OTG_FS_DM             11U
+#define GPIOA_OTG_FS_DP             12U
 #define GPIOA_SWDIO                 13U
 #define GPIOA_SWCLK                 14U
 #define GPIOA_TP_INT                15U
@@ -238,8 +238,8 @@
 #define LINE_I2C3_SCL               PAL_LINE(GPIOA, 8U)
 #define LINE_UART_TX                PAL_LINE(GPIOA, 9U)
 #define LINE_UART_RX                PAL_LINE(GPIOA, 10U)
-#define LINE_LCD_R4                 PAL_LINE(GPIOA, 11U)
-#define LINE_LCD_R5                 PAL_LINE(GPIOA, 12U)
+#define LINE_OTG_FS_DM              PAL_LINE(GPIOA, 11U)
+#define LINE_OTF_FS_DP              PAL_LINE(GPIOA, 12U)
 #define LINE_SWDIO                  PAL_LINE(GPIOA, 13U)
 #define LINE_SWCLK                  PAL_LINE(GPIOA, 14U)
 #define LINE_TP_INT                 PAL_LINE(GPIOA, 15U)
@@ -373,9 +373,9 @@
  * PA7  - ACP_RST                   (input pullup).
  * PA8  - I2C3_SCL                  (alternate 4).
  * PA9  - UART_TX                   (alternate 7).
- * PA10 - UART_RX                   (alternate 7).
- * PA11 - LCD_R4                    (alternate 14).
- * PA12 - LCD_R5                    (alternate 14).
+ * PA10 - OTG_FS_ID                 (alternate 10).
+ * PA11 - OTG_FS_DM                 (alternate 10).
+ * PA12 - OTG_FS_DP                 (alternate 10).
  * PA13 - SWDIO                     (alternate 0).
  * PA14 - SWCLK                     (alternate 0).
  * PA15 - TP_INT                    (input floating).
@@ -390,9 +390,9 @@
                                      PIN_MODE_INPUT(GPIOA_ACP_RST) |        \
                                      PIN_MODE_ALTERNATE(GPIOA_I2C3_SCL) |   \
                                      PIN_MODE_ALTERNATE(GPIOA_UART_TX) |    \
-                                     PIN_MODE_ALTERNATE(GPIOA_UART_RX) |    \
-                                     PIN_MODE_ALTERNATE(GPIOA_LCD_R4) |     \
-                                     PIN_MODE_ALTERNATE(GPIOA_LCD_R5) |     \
+                                     PIN_MODE_ALTERNATE(GPIOA_OTG_FS_ID) |  \
+                                     PIN_MODE_ALTERNATE(GPIOA_OTG_FS_DM) |  \
+                                     PIN_MODE_ALTERNATE(GPIOA_OTG_FS_DP) |  \
                                      PIN_MODE_ALTERNATE(GPIOA_SWDIO) |      \
                                      PIN_MODE_ALTERNATE(GPIOA_SWCLK) |      \
                                      PIN_MODE_INPUT(GPIOA_TP_INT))
@@ -406,9 +406,9 @@
                                      PIN_OTYPE_PUSHPULL(GPIOA_ACP_RST) |    \
                                      PIN_OTYPE_OPENDRAIN(GPIOA_I2C3_SCL) |  \
                                      PIN_OTYPE_PUSHPULL(GPIOA_UART_TX) |    \
-                                     PIN_OTYPE_PUSHPULL(GPIOA_UART_RX) |    \
-                                     PIN_OTYPE_PUSHPULL(GPIOA_LCD_R4) |     \
-                                     PIN_OTYPE_PUSHPULL(GPIOA_LCD_R5) |     \
+                                     PIN_OTYPE_PUSHPULL(GPIOA_OTG_FS_ID) |  \
+                                     PIN_OTYPE_PUSHPULL(GPIOA_OTG_FS_DM) |  \
+                                     PIN_OTYPE_PUSHPULL(GPIOA_OTG_FS_DP) |  \
                                      PIN_OTYPE_PUSHPULL(GPIOA_SWDIO) |      \
                                      PIN_OTYPE_PUSHPULL(GPIOA_SWCLK) |      \
                                      PIN_OTYPE_PUSHPULL(GPIOA_TP_INT))
@@ -422,9 +422,9 @@
                                      PIN_OSPEED_VERYLOW(GPIOA_ACP_RST) |    \
                                      PIN_OSPEED_HIGH(GPIOA_I2C3_SCL) |      \
                                      PIN_OSPEED_VERYLOW(GPIOA_UART_TX) |    \
-                                     PIN_OSPEED_VERYLOW(GPIOA_UART_RX) |    \
-                                     PIN_OSPEED_HIGH(GPIOA_LCD_R4) |        \
-                                     PIN_OSPEED_HIGH(GPIOA_LCD_R5) |        \
+                                     PIN_OSPEED_VERYLOW(GPIOA_OTG_FS_ID) |  \
+                                     PIN_OSPEED_HIGH(GPIOA_OTG_FS_DM) |     \
+                                     PIN_OSPEED_HIGH(GPIOA_OTG_FS_DP) |     \
                                      PIN_OSPEED_HIGH(GPIOA_SWDIO) |         \
                                      PIN_OSPEED_HIGH(GPIOA_SWCLK) |         \
                                      PIN_OSPEED_VERYLOW(GPIOA_TP_INT))
@@ -438,9 +438,9 @@
                                      PIN_PUPDR_PULLUP(GPIOA_ACP_RST) |      \
                                      PIN_PUPDR_FLOATING(GPIOA_I2C3_SCL) |   \
                                      PIN_PUPDR_PULLUP(GPIOA_UART_TX) |      \
-                                     PIN_PUPDR_PULLUP(GPIOA_UART_RX) |      \
-                                     PIN_PUPDR_FLOATING(GPIOA_LCD_R4) |     \
-                                     PIN_PUPDR_FLOATING(GPIOA_LCD_R5) |     \
+                                     PIN_PUPDR_PULLUP(GPIOA_OTG_FS_ID) |    \
+                                     PIN_PUPDR_FLOATING(GPIOA_OTG_FS_DM) |  \
+                                     PIN_PUPDR_FLOATING(GPIOA_OTG_FS_DP) |  \
                                      PIN_PUPDR_PULLUP(GPIOA_SWDIO) |        \
                                      PIN_PUPDR_PULLDOWN(GPIOA_SWCLK) |      \
                                      PIN_PUPDR_FLOATING(GPIOA_TP_INT))
@@ -454,9 +454,9 @@
                                      PIN_ODR_HIGH(GPIOA_ACP_RST) |          \
                                      PIN_ODR_HIGH(GPIOA_I2C3_SCL) |         \
                                      PIN_ODR_HIGH(GPIOA_UART_TX) |          \
-                                     PIN_ODR_HIGH(GPIOA_UART_RX) |          \
-                                     PIN_ODR_HIGH(GPIOA_LCD_R4) |           \
-                                     PIN_ODR_HIGH(GPIOA_LCD_R5) |           \
+                                     PIN_ODR_HIGH(GPIOA_OTG_FS_ID) |        \
+                                     PIN_ODR_HIGH(GPIOA_OTG_FS_DM) |        \
+                                     PIN_ODR_HIGH(GPIOA_OTG_FS_DP) |        \
                                      PIN_ODR_HIGH(GPIOA_SWDIO) |            \
                                      PIN_ODR_HIGH(GPIOA_SWCLK) |            \
                                      PIN_ODR_HIGH(GPIOA_TP_INT))
@@ -470,9 +470,9 @@
                                      PIN_AFIO_AF(GPIOA_ACP_RST, 0U))
 #define VAL_GPIOA_AFRH              (PIN_AFIO_AF(GPIOA_I2C3_SCL, 4U) |      \
                                      PIN_AFIO_AF(GPIOA_UART_TX, 7U) |       \
-                                     PIN_AFIO_AF(GPIOA_UART_RX, 7U) |       \
-                                     PIN_AFIO_AF(GPIOA_LCD_R4, 14U) |       \
-                                     PIN_AFIO_AF(GPIOA_LCD_R5, 14U) |       \
+                                     PIN_AFIO_AF(GPIOA_OTG_FS_ID, 10U) |    \
+                                     PIN_AFIO_AF(GPIOA_OTG_FS_DM, 10U) |    \
+                                     PIN_AFIO_AF(GPIOA_OTG_FS_DP, 10U) |    \
                                      PIN_AFIO_AF(GPIOA_SWDIO, 0U) |         \
                                      PIN_AFIO_AF(GPIOA_SWCLK, 0U) |         \
                                      PIN_AFIO_AF(GPIOA_TP_INT, 0U))
