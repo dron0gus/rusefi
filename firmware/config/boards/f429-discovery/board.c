@@ -371,7 +371,7 @@ void __early_init(void) {
   __early_sdram_init(&sdram_cfg);
 #endif
 
-  if (0) {
+  if (1) {
     /* yes, hardcoded values */
     __early_sdram_test((void *) 0xD0000000, 8 * 1024 * 1024);
   }
