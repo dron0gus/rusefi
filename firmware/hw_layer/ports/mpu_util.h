@@ -142,3 +142,7 @@ void HardFaultVector(void);
 #if EFI_USE_OPENBLT
 #define getOpenBltVersion() (((uint32_t *)BLT_BIN_VERSION_ADDR)[0])
 #endif
+
+//#if (HAL_USE_MFS == TRUE)
+//const MFSConfig *portGetMfsConfig();
+//#endif

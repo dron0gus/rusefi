@@ -9,7 +9,7 @@
 
 #include "flash_int.h"
 
-static bool isDualBank() {
+bool isDualBank() {
 #ifdef FLASH_OPTCR_nDBANK
 	// cleared bit indicates dual bank
 	return (FLASH->OPTCR & FLASH_OPTCR_nDBANK) == 0;
@@ -18,7 +18,7 @@ static bool isDualBank() {
 #endif
 }
 
-static uint16_t flashSize() {
+uint16_t flashSize() {
 	return *reinterpret_cast<const volatile uint16_t*>(FLASHSIZE_BASE);
 }
 

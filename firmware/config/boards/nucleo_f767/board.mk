@@ -21,3 +21,5 @@ DDEFS += -DHW_NUCLEO_F767=1
 DDEFS += -DFIRMWARE_ID=\"nucleo_f767\"
 DDEFS += -DDEFAULT_ENGINE_TYPE=engine_type_e::MINIMAL_PINS
 DDEFS += -DSTATIC_BOARD_ID=STATIC_BOARD_ID_NUCLEO_F767
+
+include $(PROJECT_DIR)/hw_layer/ports/stm32/use_higher_level_flash_api.mk

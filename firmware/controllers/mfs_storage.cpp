@@ -15,11 +15,22 @@
 
 #include "hal_mfs.h"
 
+extern PUBLIC_API_WEAK void portInitMfs();
+extern const MFSConfig *portGetMfsConfig();
+
 /* Managed Flash Storage driver */
 MFSDriver mfsd;
 
-extern void boardInitMfs(void);
-extern const MFSConfig *boardGetMfsConfig(void);
+PUBLIC_API_WEAK void boardInitMfs()
+{
+	portInitMfs();
+}
+
+PUBLIC_API_WEAK const MFSConfig *boardGetMfsConfig()
+{
+	/* detect on-chip flash configuration */
+	return portGetMfsConfig();
+}
 
 StorageStatus mfsStorageWrite(int id, const uint8_t *ptr, size_t size) {
 	efiPrintf("Writing storage ID %d ... %d bytes", id, size);
