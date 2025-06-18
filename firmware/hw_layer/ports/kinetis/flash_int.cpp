@@ -170,33 +170,6 @@ bool intFlashIsErased(flashaddr_t address, size_t size) {
 	return TRUE;
 }
 
-bool intFlashCompare(flashaddr_t address, const char* buffer, size_t size) {
-#if 0
-	uint32_t failAddr = 0, failDat = 0;
-	status_t status = FLEXNVM_DflashVerifyProgram(&flashCfg, address, size, (const uint8_t *)buffer, 
-                                             kFTFx_MarginValueUser, &failAddr, &failDat);
-	return (status == kStatus_FTFx_Success);
-#endif
-	/* For efficiency, compare flashdata_t values as much as possible,
-	 * then, fallback to byte per byte comparison. */
-	while (size >= sizeof(flashdata_t)) {
-		if (*(volatile flashdata_t*) address != *(flashdata_t*) buffer)
-			return FALSE;
-		address += sizeof(flashdata_t);
-		buffer += sizeof(flashdata_t);
-		size -= sizeof(flashdata_t);
-	}
-	while (size > 0) {
-		if (*(volatile char*) address != *buffer)
-			return FALSE;
-		++address;
-		++buffer;
-		--size;
-	}
-
-	return TRUE;
-}
-
 int intFlashRead(flashaddr_t source, char* destination, size_t size) {
 	memcpy(destination, (char*) source, size);
 	return FLASH_RETURN_SUCCESS;

@@ -124,16 +124,6 @@ int intFlashErase(flashaddr_t address, size_t size);
 bool intFlashIsErased(flashaddr_t address, size_t size);
 
 /**
- * @brief Check if the data in @p buffer are identical to the one in flash memory.
- * @param address First address in flash memory to be checked.
- * @param buffer Buffer containing the data to compare.
- * @param size Size of @p buffer in bytes.
- * @return TRUE if the flash memory and the buffer contain identical data.
- * @return FALSE if the flash memory and the buffer don't contain identical data.
- */
-bool intFlashCompare(flashaddr_t address, const char* buffer, size_t size);
-
-/**
  * @brief Copy data from the flash memory to a @p destination.
  * @warning The @p destination must be at least @p size bytes long.
  * @param source First address of the flash memory to be copied.
