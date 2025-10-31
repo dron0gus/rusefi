@@ -52,6 +52,7 @@ int CanStreamerState::sendFrame(const IsoTpFrameHeader & header, const uint8_t *
 			txmsg[i + offset] = data[i];
 		}
 	}
+	// TODO: fill rest of txmsg with 0xAA
 
 	// send the frame!
 	if (transport->transmit(&txmsg, timeout) == CAN_MSG_OK)
