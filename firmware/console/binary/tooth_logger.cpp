@@ -55,6 +55,8 @@
 static_assert(sizeof(composite_logger_s) == COMPOSITE_PACKET_SIZE, "composite packet size");
 
 static volatile bool ToothLoggerEnabled = false;
+// rewrite older events with newer if noone is reading filledBuffers queue
+static bool circularBufferMode = false;
 static TLmode ToothLoggerMode = TLmode::Full;
 
 // current state
@@ -230,7 +232,15 @@ static CompositeBuffer* findBuffer(efitick_t timestamp) {
 	if (!currentBuffer) {
 		// try and find a buffer, if none available, we can't log
 		if (MSG_OK != freeBuffers.fetchI(&buffer)) {
-			return nullptr;
+			//
+			if (!circularBufferMode) {
+				return nullptr;
+			}
+
+			// in circular mode get oldest one and reuse
+			if (MSG_OK != filledBuffers.fetchI(&buffer)) {
+				return nullptr;
+			}
 		}
 
 		// Record the time of the last buffer swap so we can force a swap after a minimum period of time
@@ -249,17 +259,31 @@ static void SetNextCompositeEntry(efitick_t timestamp) {
 	// This is called from multiple interrupts/threads, so we need a lock.
 	chibios_rt::CriticalSectionLocker csl;
 
-	CompositeBuffer* buffer = findBuffer(timestamp);
+	if ((currentBuffer) && (currentBuffer->startTime.hasElapsedSec(5))) {
+		// more than 5 seconds gap in events - start new buffer
 
+		// Post to the output queue
+		filledBuffers.postI(currentBuffer);
+
+		// Null the current buffer so we get a new one
+		currentBuffer = nullptr;
+
+		// Flag that we are ready
+		setToothLogReady(true);
+	}
+
+	CompositeBuffer* buffer = findBuffer(timestamp);
 	if (!buffer) {
 		// All buffers are full, nothing to do here.
 		return;
 	}
 
+	// TODO: why so complicated?
 	size_t idx = buffer->nextIdx;
 	auto nextIdx = idx + 1;
 	buffer->nextIdx = nextIdx;
 
+	// TODO: is this a useless check?
 	if (idx < efi::size(buffer->buffer)) {
 		composite_logger_s* entry = &buffer->buffer[idx];
 
@@ -273,12 +297,8 @@ static void SetNextCompositeEntry(efitick_t timestamp) {
 	}
 
 	// if the buffer is full...
-	bool bufferFull = nextIdx >= efi::size(buffer->buffer);
-	// ... or it's been too long since the last flush
-	bool bufferTimedOut = buffer->startTime.hasElapsedSec(5);
-
 	// Then cycle buffers and set the ready flag.
-	if (bufferFull || bufferTimedOut) {
+	if (nextIdx >= efi::size(buffer->buffer)) {
 		// Post to the output queue
 		filledBuffers.postI(buffer);
 
@@ -468,6 +488,29 @@ bool ToothLoggerHasData() {
 // binary vs CSV output format, latched at file creation - see ToothLoggerWriter()
 static bool sdTriggerLogCsv = 0;
 
+// Return true if queue if empty
+static bool ToothLoggerFetchOrGetCurrent(CompositeBuffer** buffer) {
+	// manualy pick buffer, do not use GetToothLoggerBufferImpl() as it changes TS buffer ready flag
+	msg_t msg = filledBuffers.fetch(buffer, TIME_MS2I(3000));
+	// small chanse of race condition here
+	if (msg == MSG_TIMEOUT) {
+		chibios_rt::CriticalSectionLocker csl;
+
+		// flush data from currently writing buffer!
+		if (currentBuffer) {
+			*buffer = currentBuffer;
+			currentBuffer = nullptr;
+		} else {
+			*buffer = nullptr;
+		}
+
+		// if we did not get any event within 3 seconds - finish current file and wait for new event.
+		return true;
+	}
+
+	return false;
+}
+
 /**
  * One iteration of SD card .teeth file writing, called from the SD thread
  * (sdLoggerTooth() in mmc_card.cpp): waits up to 3 seconds for a filled buffer
@@ -481,25 +524,8 @@ static bool sdTriggerLogCsv = 0;
 int ToothLoggerWriter(FileBufferedWriter &writer) {
 	int ret = 0;
 	CompositeBuffer* buffer = nullptr;
-	bool startNewFile = false;
 
-	// manualy pick buffer, do not use GetToothLoggerBufferImpl() as it changes TS buffer ready flag
-	msg_t msg = filledBuffers.fetch(&buffer, TIME_MS2I(3000));
-	if ((msg != MSG_OK) && (msg != MSG_TIMEOUT)) {
-		// error?
-		return -1;
-	}
-	if (msg == MSG_TIMEOUT) {
-		chibios_rt::CriticalSectionLocker csl;
-		// if we did not get any event within 3 seconds - finish current file and wait for new event.
-		startNewFile = true;
-
-		// flush data from currently writing buffer!
-		if (currentBuffer) {
-			buffer = currentBuffer;
-			currentBuffer = nullptr;
-		}
-	}
+	bool startNewFile = ToothLoggerFetchOrGetCurrent(&buffer);
 
 	// can return nullptr
 	if (buffer) {
@@ -520,6 +546,16 @@ int ToothLoggerWriter(FileBufferedWriter &writer) {
 	}
 
 	return startNewFile ? 0 : ret;
+}
+
+// Write everything available in filledBuffers queue
+int ToothLoggerWriteCircular(FileBufferedWriter &writer) {
+	if (!circularBufferMode) {
+		return 0;
+	}
+
+
+	return 0;
 }
 
 #endif /* EFI_FILE_LOGGING */
