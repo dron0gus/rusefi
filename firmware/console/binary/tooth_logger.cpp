@@ -150,6 +150,9 @@ bool EnableToothLogger(TLmode mode) {
 	// Reset state
 	currentBuffer = nullptr;
 
+	freeBuffers.resumeX();
+	filledBuffers.resumeX();
+
 	// Empty the filled buffer list
 	CompositeBuffer* dummy;
 	while (MSG_TIMEOUT != filledBuffers.fetchI(&dummy))
@@ -171,6 +174,10 @@ bool EnableToothLogger(TLmode mode) {
 
 void DisableToothLogger() {
 	chibios_rt::CriticalSectionLocker csl;
+
+	// Resume all waiting threads
+	freeBuffers.resetI();
+	filledBuffers.resetI();
 
 	// Release the big buffer for another user
 	// C++ magic: here we are calling BigBufferHandle::operator=() with empty instance
